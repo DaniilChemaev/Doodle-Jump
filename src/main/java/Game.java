@@ -24,6 +24,8 @@ public class Game extends Application {
 
     private void newPlayer() {
         player = new Player();
+        player.setTranslateX(185);
+        player.setTranslateY(650);
         gameRoot.getChildren().add(player);
     }
 
@@ -40,6 +42,7 @@ public class Game extends Application {
     }
 
     private void playerControl() {
+        System.out.println(player.playerVelocity.getY());
         if (player.getTranslateY() >= 5) {
             player.jump();
             player.setCanJump(false);
@@ -56,10 +59,12 @@ public class Game extends Application {
             player.playerVelocity = player.playerVelocity.add(0, 1);
         } else player.setCanJump(false);
         player.moveY((int) player.playerVelocity.getY());
+
     }
 
     private void checkSide() {
-        System.out.println(player.getTranslateX());
+//        System.out.println("X: " + player.getTranslateX());
+//        System.out.println("Y: " + player.getTranslateY());
         if (player.getTranslateX() < -72) {  // Если ушел влево
             player.setTranslateX(430);
         } else if (player.getTranslateX() > 430) {  // Если ушел вправо

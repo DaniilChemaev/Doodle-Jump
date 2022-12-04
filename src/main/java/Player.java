@@ -4,9 +4,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 public class Player extends Pane {
-    private static final double WIDTH = 76;
-    private static final double HEIGHT = 76;
-    public Point2D playerVelocity = new Point2D(0, 0);
+    private final double WIDTH = 76;
+    private final double HEIGHT = 76;
+    public Point2D playerVelocity = new Point2D(0, 10);
 
     private boolean canJump;
     private static final Image playerImg = new Image("images/doodler.png");
@@ -22,13 +22,24 @@ public class Player extends Pane {
 
     public void moveX(int value) {
         boolean movingRight = value > 0;
-
         for (int i = 0; i < Math.abs(value); i++) {
             this.setTranslateX(this.getTranslateX() + (movingRight ? 1 : -1));
         }
     }
 
     public void moveY(int value) {
+        boolean movingDown = value > 0;
+        for (int i = 0; i < Math.abs(value); i++) {
+            if (movingDown) {
+                if (this.getTranslateY() + this.HEIGHT >= 900) {
+                    this.setTranslateY(this.getTranslateY() - 1);
+                    canJump = true;
+                    return;
+                }
+            }
+            this.setTranslateY(this.getTranslateY() + (movingDown ? 1 : -1));
+        }
+
     }
 
     public void jump() {
@@ -41,6 +52,4 @@ public class Player extends Pane {
     public void setCanJump(boolean canJump) {
         this.canJump = canJump;
     }
-
-
 }
