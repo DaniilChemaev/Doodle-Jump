@@ -7,6 +7,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -14,6 +15,9 @@ public class Game extends Application {
     Image backgroundImg = new Image("images/background.png");
     private static final int WIDTH = 450;
     private static final int HEIGHT = 900;
+
+    public static ArrayList<Platform> platforms = new ArrayList<>();
+    public static final int BLOCK_SIZE = 68;
 
     private HashMap<KeyCode, Boolean> keys = new HashMap<>();
 
@@ -24,8 +28,8 @@ public class Game extends Application {
 
     private void newPlayer() {
         player = new Player();
-        player.setTranslateX(185);
-        player.setTranslateY(650);
+        player.setTranslateX(WIDTH / 2.5);
+        player.setTranslateY(HEIGHT - 50);
         gameRoot.getChildren().add(player);
     }
 
@@ -33,6 +37,24 @@ public class Game extends Application {
         ImageView background = new ImageView(backgroundImg);
         background.setFitHeight(HEIGHT);
         background.setFitWidth(WIDTH);
+
+        int shift = HEIGHT - 30;
+        int min = 100;
+        int max = 105;
+
+        for (int i = 0; i < 8; i++) {
+            shift -= min + (int) (Math.random() * ((max - min) + 1));
+            Platform platform = new Platform(1, (int) (Math.random() * 5 * BLOCK_SIZE), shift);
+
+            platforms.add(platform);
+            gameRoot.getChildren().add(platform);
+        }
+        System.out.println(platforms.get(0).getTranslateY());
+        System.out.println(platforms.get(1).getTranslateY());
+        System.out.println(platforms.get(2).getTranslateY());
+        System.out.println(platforms.get(3).getTranslateY());
+        System.out.println(platforms.get(4).getTranslateY());
+        addPlatforms();
         appRoot.getChildren().addAll(background, gameRoot);
     }
 
@@ -42,7 +64,7 @@ public class Game extends Application {
     }
 
     private void playerControl() {
-        System.out.println(player.playerVelocity.getY());
+//        System.out.println(player.playerVelocity.getY());
         if (player.getTranslateY() >= 5) {
             player.jump();
             player.setCanJump(false);
@@ -76,14 +98,29 @@ public class Game extends Application {
         return keys.getOrDefault(key, false);
     }
 
+    private void addPlatforms() {
+        player.translateYProperty().addListener((obs, old, newValue) -> {
+            if (player.getTranslateY() < HEIGHT / 3) {
+                for (Platform platform : platforms) {
+                    platform.setTranslateY(platform.getTranslateY() + 0.5);
+                    if (platform.getTranslateY() == HEIGHT + 1) {  // Выход платформы за пределы видимой карты
+                        platform.setTranslateY(1);
+                        platform.setTranslateX(Math.random() * 6 * BLOCK_SIZE);
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void start(Stage primaryStage) {
         appRoot = new Pane();
         gameRoot = new Pane();
         appRoot.setPrefSize(WIDTH, HEIGHT);
 
-        initContent();
         newPlayer();
+        initContent();
+
 
         Scene scene = new Scene(appRoot);
         scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
