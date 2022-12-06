@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class Game extends Application {
     Image backgroundImg = new Image("images/background.png");
-    private static final int WIDTH = 450;
-    private static final int HEIGHT = 900;
+    public static final int WIDTH = 450;
+    public static final int HEIGHT = 900;
 
     public static ArrayList<Platform> platforms = new ArrayList<>();
     public static final int BLOCK_SIZE = 68;
@@ -29,7 +29,7 @@ public class Game extends Application {
     private void newPlayer() {
         player = new Player();
         player.setTranslateX(WIDTH / 2.5);
-        player.setTranslateY(HEIGHT - 50);
+        player.setTranslateY(HEIGHT - 100);
         gameRoot.getChildren().add(player);
     }
 
@@ -39,8 +39,8 @@ public class Game extends Application {
         background.setFitWidth(WIDTH);
 
         int shift = HEIGHT - 30;
-        int min = 100;
-        int max = 105;
+        int min = 130;
+        int max = 160;
 
         for (int i = 0; i < 8; i++) {
             shift -= min + (int) (Math.random() * ((max - min) + 1));
@@ -49,11 +49,6 @@ public class Game extends Application {
             platforms.add(platform);
             gameRoot.getChildren().add(platform);
         }
-        System.out.println(platforms.get(0).getTranslateY());
-        System.out.println(platforms.get(1).getTranslateY());
-        System.out.println(platforms.get(2).getTranslateY());
-        System.out.println(platforms.get(3).getTranslateY());
-        System.out.println(platforms.get(4).getTranslateY());
         addPlatforms();
         appRoot.getChildren().addAll(background, gameRoot);
     }
@@ -85,8 +80,6 @@ public class Game extends Application {
     }
 
     private void checkSide() {
-//        System.out.println("X: " + player.getTranslateX());
-//        System.out.println("Y: " + player.getTranslateY());
         if (player.getTranslateX() < -72) {  // Если ушел влево
             player.setTranslateX(430);
         } else if (player.getTranslateX() > 430) {  // Если ушел вправо
@@ -102,9 +95,9 @@ public class Game extends Application {
         player.translateYProperty().addListener((obs, old, newValue) -> {
             if (player.getTranslateY() < HEIGHT / 3) {
                 for (Platform platform : platforms) {
-                    platform.setTranslateY(platform.getTranslateY() + 0.5);
+                    platform.setTranslateY(platform.getTranslateY() + 1);
                     if (platform.getTranslateY() == HEIGHT + 1) {  // Выход платформы за пределы видимой карты
-                        platform.setTranslateY(1);
+                        platform.setTranslateY(0);
                         platform.setTranslateX(Math.random() * 6 * BLOCK_SIZE);
                     }
                 }

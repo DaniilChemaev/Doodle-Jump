@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 public class Player extends Pane {
     private final double WIDTH = 76;
     private final double HEIGHT = 76;
-    public Point2D playerVelocity = new Point2D(0, 10);
+    public Point2D playerVelocity = new Point2D(0, 0);
 
     private boolean canJump;
     private static final Image playerImg = new Image("images/doodler.png");
@@ -29,12 +29,21 @@ public class Player extends Pane {
 
     public void moveY(int value) {
         boolean movingDown = value > 0;
+        for (int i = 0; i < Game.platforms.size(); i++) {
+            System.out.print(Game.platforms.get(i).getTranslateY() + " ");
+        }
+        System.out.println();
         for (int i = 0; i < Math.abs(value); i++) {
-            if (movingDown) {
-                if (this.getTranslateY() + this.HEIGHT >= 900) {
-                    this.setTranslateY(this.getTranslateY() - 1);
-                    canJump = true;
-                    return;
+            for (Platform platform : Game.platforms) {
+                if (getBoundsInParent().intersects(platform.getBoundsInParent())) {
+                    if (movingDown) {
+                        if (this.getTranslateY() + this.HEIGHT == platform.getTranslateY()) {
+                            System.out.println(platform.getTranslateY());
+                            this.setTranslateY(this.getTranslateY() - 1);
+                            canJump = true;
+                            return;
+                        }
+                    }
                 }
             }
             this.setTranslateY(this.getTranslateY() + (movingDown ? 1 : -1));
