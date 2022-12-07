@@ -125,9 +125,14 @@ public class Game extends Application {
         primaryStage.show();
 
         AnimationTimer timer = new AnimationTimer() {
+            private long lastFrameTime = 0;
+
             @Override
             public void handle(long now) {
-                update();
+                if (now - lastFrameTime >= 10_000_000) {
+                    update();
+                    lastFrameTime = now;
+                }
             }
         };
         timer.start();
