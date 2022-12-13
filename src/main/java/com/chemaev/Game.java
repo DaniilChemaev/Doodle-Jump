@@ -1,3 +1,7 @@
+package com.chemaev;
+
+import com.chemaev.models.Platform;
+import com.chemaev.models.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -105,36 +109,42 @@ public class Game extends Application {
         });
     }
 
+//    @Override
+//    public void start(Stage primaryStage) {
+//        appRoot = new Pane();
+//        gameRoot = new Pane();
+//        appRoot.setPrefSize(WIDTH, HEIGHT);
+//
+//        newPlayer();
+//        initContent();
+//
+//
+//        Scene scene = new Scene(appRoot);
+//        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
+//        scene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
+//
+//        primaryStage.setTitle("Doodle Jump");
+//        primaryStage.setScene(scene);
+//        primaryStage.setResizable(false);
+//        primaryStage.show();
+//
+//        AnimationTimer timer = new AnimationTimer() {
+//            private long lastFrameTime = 0;
+//
+//            @Override
+//            public void handle(long now) {
+//                if (now - lastFrameTime >= 10_000_000) {
+//                    update();
+//                    lastFrameTime = now;
+//                }
+//            }
+//        };
+//        timer.start();
+//    }
+
+
     @Override
-    public void start(Stage primaryStage) {
-        appRoot = new Pane();
-        gameRoot = new Pane();
-        appRoot.setPrefSize(WIDTH, HEIGHT);
-
-        newPlayer();
-        initContent();
-
-
-        Scene scene = new Scene(appRoot);
-        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
-        scene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
-
-        primaryStage.setTitle("Doodle Jump");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
-
-        AnimationTimer timer = new AnimationTimer() {
-            private long lastFrameTime = 0;
-
-            @Override
-            public void handle(long now) {
-                if (now - lastFrameTime >= 10_000_000) {
-                    update();
-                    lastFrameTime = now;
-                }
-            }
-        };
-        timer.start();
+    public void start(Stage stage) throws Exception {
+        new Menu(stage);
     }
 }

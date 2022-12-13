@@ -1,3 +1,5 @@
+package com.chemaev.models;
+
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,7 +30,7 @@ public class Platform extends Pane {
         }
 
         getChildren().addAll(platformView);
-//        Game.platforms.add(this);
-//        Game.gameRoot.getChildren().add(this);
+//        com.chemaev.Game.platforms.add(this);
+//        com.chemaev.Game.gameRoot.getChildren().add(this);
     }
 }

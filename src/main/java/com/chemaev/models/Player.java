@@ -1,3 +1,6 @@
+package com.chemaev.models;
+
+import com.chemaev.Game;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
