@@ -1,5 +1,7 @@
 package com.chemaev;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -10,6 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Menu {
     private String title = "Menu";
     private AnchorPane pane = null;
@@ -17,7 +21,7 @@ public class Menu {
     public Button singlePlayer;
     public Button multiPlayer;
     private Stage stage;
-    //    private final GameMap map = GameMap.getInstance();
+    private final Game game = Game.getInstance();
     private TextField nameTextField;
 
     public Menu(Stage stage) {
@@ -32,7 +36,7 @@ public class Menu {
         Font font = Font.font("Courier New", FontWeight.BOLD, 20);
 
         singlePlayer = new Button("singlePlayer");
-//        singlePlayer.setOnAction(singlePlayerEvent);
+        singlePlayer.setOnAction(singlePlayerEvent);
         singlePlayer.setMaxWidth(500);
         singlePlayer.setMaxHeight(500);
         singlePlayer.setFont(font);
@@ -63,4 +67,19 @@ public class Menu {
         stage.setScene(scene);
         stage.show();
     }
+
+    private final EventHandler<ActionEvent> singlePlayerEvent = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (singlePlayer == event.getSource()) {
+                game.setName(nameTextField.getText());
+                try {
+                    game.setStage(stage);
+                    game.startSinglePlayer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 }
