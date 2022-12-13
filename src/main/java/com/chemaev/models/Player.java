@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
+
 public class Player extends Pane implements EventHandler<KeyEvent> {
     private final double WIDTH = 76;
     private final double HEIGHT = 76;
@@ -17,6 +18,7 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     private boolean canJump;
     private static final Image playerImg = new Image("images/doodler.png");
     private static final ImageView playerView = new ImageView(playerImg);
+    private KeyCode lastKeyCode;
 
     public Player() {
         playerView.setFitHeight(HEIGHT);
@@ -35,16 +37,12 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
 
     public void moveY(int value) {
         boolean movingDown = value > 0;
-        for (int i = 0; i < Game.platforms.size(); i++) {
-            System.out.print(Game.platforms.get(i).getTranslateY() + " ");
-        }
-        System.out.println();
         for (int i = 0; i < Math.abs(value); i++) {
             for (Platform platform : Game.platforms) {
                 if (getBoundsInParent().intersects(platform.getBoundsInParent())) {
                     if (movingDown) {
                         if (this.getTranslateY() + this.HEIGHT == platform.getTranslateY()) {
-                            System.out.println(platform.getTranslateY());
+//                            System.out.println(platform.getTranslateY());
                             this.setTranslateY(this.getTranslateY() - 1);
                             canJump = true;
                             return;
@@ -58,14 +56,14 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     }
 
     public void jump() {
-        if (canJump) {
+        if (getTranslateY() >= 5 && canJump) {
             playerVelocity = playerVelocity.add(0, -30);
             canJump = false;
         }
-    }
-
-    public void setCanJump(boolean canJump) {
-        this.canJump = canJump;
+        if (playerVelocity.getY() < 10) {
+            playerVelocity = playerVelocity.add(0, 1);
+        } else canJump = false;
+        moveY((int) playerVelocity.getY());
     }
 
     private void checkSide() {
@@ -76,34 +74,33 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
         }
     }
 
-    private void handleKeyPressed(KeyEvent event) {
-        if (getTranslateY() >= 5) {
-            jump();
-            setCanJump(false);
-        }
-
-        switch (event.getCode()) {
-            case LEFT:
-                setScaleX(-1);
-                moveX(-7);
-            case RIGHT:
-                setScaleX(1);
-                moveX(7);
-        }
-
+    public void update() {
+        jump();
+        playerControl();
         checkSide();
+    }
 
-        if (playerVelocity.getY() < 10) {
-            playerVelocity = playerVelocity.add(0, 1);
-        } else setCanJump(false);
-        moveY((int) playerVelocity.getY());
+    private boolean isPressed(KeyCode key) {
+        return key == lastKeyCode;
+    }
+
+    private void playerControl() {
+        if (isPressed(KeyCode.LEFT)) {
+            setScaleX(-1);
+            moveX(-7);
+        }
+        if (isPressed(KeyCode.RIGHT)) {
+            setScaleX(1);
+            moveX(7);
+        }
     }
 
     @Override
     public void handle(KeyEvent event) {
-
         if (event.getEventType().getName().equals("KEY_PRESSED")) {
-            handleKeyPressed(event);
+            lastKeyCode = event.getCode();
+        } else if (event.getEventType().getName().equals("KEY_RELEASED")) {
+            lastKeyCode = null;
         }
     }
 }

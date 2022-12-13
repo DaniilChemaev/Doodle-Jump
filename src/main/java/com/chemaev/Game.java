@@ -3,17 +3,14 @@ package com.chemaev;
 import com.chemaev.models.Platform;
 import com.chemaev.models.Player;
 import javafx.animation.AnimationTimer;
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 
@@ -25,19 +22,15 @@ public class Game {
     private static final CopyOnWriteArrayList<Player> players = new CopyOnWriteArrayList<>();
 
     public static final int BLOCK_SIZE = 68;
-    private HashMap<KeyCode, Boolean> keys = new HashMap<>();
     private static final Game game = new Game();
     private static final Pane appPane = new Pane();
     private static Stage primaryStage;
     private static Scene scene;
     private Pane gameRoot;
-    //    private Pane appRoot;
     private static String name;
-//    public Player player;
 
     private void configureSinglePlayer() {
         gameRoot = new Pane();
-//        appRoot.setPrefSize(WIDTH, HEIGHT);
 
         Player player = new Player();
         setPlayer(player);
@@ -45,8 +38,10 @@ public class Game {
 
         scene = new Scene(appPane, STAGE_WIDTH, STAGE_HEIGHT);
 
-        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
-        scene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
+        for (Player p : players) {
+            scene.setOnKeyPressed(p);
+            scene.setOnKeyReleased(p);
+        }
 
         primaryStage.setTitle("Doodle Jump");
         primaryStage.setScene(scene);
@@ -59,7 +54,9 @@ public class Game {
             @Override
             public void handle(long now) {
                 if (now - lastFrameTime >= 10_000_000) {
-                    update();
+                    for (Player p : players) {
+                        p.update();
+                    }
                     lastFrameTime = now;
                 }
             }
@@ -99,38 +96,6 @@ public class Game {
         appPane.getChildren().addAll(background, gameRoot);
     }
 
-    private void update() {
-        for (Player p : players) {
-            scene.setOnKeyPressed(p);
-            scene.setOnKeyReleased(p);
-        }
-//        checkSide();
-    }
-
-//    private void playerControl() {
-//        if (player.getTranslateY() >= 5) {
-//            player.jump();
-//            player.setCanJump(false);
-//        }
-//        if (isPressed(KeyCode.LEFT)) {
-//            player.setScaleX(-1);
-//            player.moveX(-7);
-//        }
-//        if (isPressed(KeyCode.RIGHT)) {
-//            player.setScaleX(1);
-//            player.moveX(7);
-//        }
-//        if (player.playerVelocity.getY() < 10) {
-//            player.playerVelocity = player.playerVelocity.add(0, 1);
-//        } else player.setCanJump(false);
-//        player.moveY((int) player.playerVelocity.getY());
-//    }
-
-
-    private boolean isPressed(KeyCode key) {
-        return keys.getOrDefault(key, false);
-    }
-
     private void addPlatforms() {
         for (Player p : players) {
             p.translateYProperty().addListener((obs, old, newValue) -> {
@@ -147,7 +112,6 @@ public class Game {
         }
     }
 
-
     public void setName(String name) {
         Game.name = name;
     }
@@ -160,37 +124,3 @@ public class Game {
         return game;
     }
 }
-
-//    @Override
-//    public void start(Stage primaryStage) {
-//        appRoot = new Pane();
-//        gameRoot = new Pane();
-//        appRoot.setPrefSize(WIDTH, HEIGHT);
-//
-//        newPlayer();
-//        initContent();
-//
-//
-//        Scene scene = new Scene(appRoot);
-//        scene.setOnKeyPressed(event -> keys.put(event.getCode(), true));
-//        scene.setOnKeyReleased(event -> keys.put(event.getCode(), false));
-//
-//        primaryStage.setTitle("Doodle Jump");
-//        primaryStage.setScene(scene);
-//        primaryStage.setResizable(false);
-//        primaryStage.show();
-//
-//        AnimationTimer timer = new AnimationTimer() {
-//            private long lastFrameTime = 0;
-//
-//            @Override
-//            public void handle(long now) {
-//                if (now - lastFrameTime >= 10_000_000) {
-//                    update();
-//                    lastFrameTime = now;
-//                }
-//            }
-//        };
-//        timer.start();
-//    }
-//}
