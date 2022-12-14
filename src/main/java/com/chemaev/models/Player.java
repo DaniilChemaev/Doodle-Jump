@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 public class Player extends Pane implements EventHandler<KeyEvent> {
     private final double WIDTH = 76;
     private final double HEIGHT = 76;
-    public Point2D playerVelocity = new Point2D(0, 0);
+    public Point2D playerVelocity = new Point2D(0, 10);
 
     private boolean canJump;
     private static final Image playerImg = new Image("images/doodler.png");
@@ -41,9 +41,8 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
             for (Platform platform : Game.platforms) {
                 if (getBoundsInParent().intersects(platform.getBoundsInParent())) {
                     if (movingDown) {
-                        if (this.getTranslateY() + this.HEIGHT == platform.getTranslateY()) {
-//                            System.out.println(platform.getTranslateY());
-                            this.setTranslateY(this.getTranslateY() - 1);
+                        if (getTranslateY() + HEIGHT == platform.getTranslateY()) {
+                            setTranslateY(getTranslateY() - 1);
                             canJump = true;
                             return;
                         }
@@ -52,32 +51,40 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
             }
             this.setTranslateY(this.getTranslateY() + (movingDown ? 1 : -1));
         }
-
     }
 
     public void jump() {
-        if (getTranslateY() >= 5 && canJump) {
+        if (getTranslateY() >= 100 && canJump) {
             playerVelocity = playerVelocity.add(0, -30);
             canJump = false;
         }
         if (playerVelocity.getY() < 10) {
             playerVelocity = playerVelocity.add(0, 1);
         } else canJump = false;
+//        System.out.println(getTranslateY());
         moveY((int) playerVelocity.getY());
     }
 
-    private void checkSide() {
-        if (getTranslateX() < -72) {  // Если ушел влево
-            setTranslateX(430);
-        } else if (getTranslateX() > 430) {  // Если ушел вправо
+    public void move() {
+
+    }
+
+    private void checkLRBounds() {
+        if (getTranslateX() < -60) {
+            setTranslateX(445);
+        }
+        if (getTranslateX() > 445) {
             setTranslateX(-60);
+        }
+        if (getTranslateY() < 10) {
+            setTranslateY(10);
         }
     }
 
     public void update() {
         jump();
         playerControl();
-        checkSide();
+        checkLRBounds();
     }
 
     private boolean isPressed(KeyCode key) {
@@ -102,5 +109,15 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
         } else if (event.getEventType().getName().equals("KEY_RELEASED")) {
             lastKeyCode = null;
         }
+    }
+
+    public boolean didFall() {
+        boolean didFall = false;
+        if (this.getTranslateY() > Game.STAGE_HEIGHT) {
+            didFall = true;
+
+        }
+
+        return didFall;
     }
 }

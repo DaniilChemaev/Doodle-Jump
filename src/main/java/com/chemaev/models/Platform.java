@@ -30,7 +30,5 @@ public class Platform extends Pane {
         }
 
         getChildren().addAll(platformView);
-//        com.chemaev.Game.platforms.add(this);
-//        com.chemaev.Game.gameRoot.getChildren().add(this);
     }
 }

@@ -17,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Game {
     Image backgroundImg = new Image("images/background.png");
     public static final int STAGE_WIDTH = 450;
-    public static final int STAGE_HEIGHT = 900;
+    public static final int STAGE_HEIGHT = 700;
     public static ArrayList<Platform> platforms = new ArrayList<>();
     private static final CopyOnWriteArrayList<Player> players = new CopyOnWriteArrayList<>();
 
@@ -28,6 +28,8 @@ public class Game {
     private static Scene scene;
     private Pane gameRoot;
     private static String name;
+    AnimationTimer timer;
+
 
     private void configureSinglePlayer() {
         gameRoot = new Pane();
@@ -48,7 +50,7 @@ public class Game {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
             private long lastFrameTime = 0;
 
             @Override
@@ -56,6 +58,11 @@ public class Game {
                 if (now - lastFrameTime >= 10_000_000) {
                     for (Player p : players) {
                         p.update();
+                        if (p.didFall()) {
+                            System.out.println("GAME OVER");
+                            showWinMenu("123");
+                            timer.stop();
+                        }
                     }
                     lastFrameTime = now;
                 }
@@ -64,14 +71,18 @@ public class Game {
         timer.start();
     }
 
+    public void showWinMenu(String winnerName) {
+        new WinMenu(primaryStage, winnerName);
+    }
+
     public void startSinglePlayer() throws IOException {
         configureSinglePlayer();
     }
 
 
     private void setPlayer(Player player) {
-        player.setTranslateX(STAGE_WIDTH / 2.5);
-        player.setTranslateY(STAGE_HEIGHT - 100);
+        player.setTranslateX(190);
+        player.setTranslateY(540);
         gameRoot.getChildren().add(player);
         players.add(player);
     }
@@ -99,7 +110,8 @@ public class Game {
     private void addPlatforms() {
         for (Player p : players) {
             p.translateYProperty().addListener((obs, old, newValue) -> {
-                if (p.getTranslateY() < STAGE_HEIGHT / 3) {
+                if (p.getTranslateY() <= STAGE_HEIGHT / 2) {
+//                    System.out.println("p.getTranslateY() < STAGE_HEIGHT / 2");
                     for (Platform platform : platforms) {
                         platform.setTranslateY(platform.getTranslateY() + 1);
                         if (platform.getTranslateY() == STAGE_HEIGHT + 1) {  // Выход платформы за пределы видимой карты
