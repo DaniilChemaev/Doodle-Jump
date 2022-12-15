@@ -55,7 +55,7 @@ public class Game {
 
             @Override
             public void handle(long now) {
-                if (now - lastFrameTime >= 10_000_000) {
+                if (now - lastFrameTime >= 20_000_000) {
                     for (Player p : players) {
                         p.update();
                         if (p.didFall()) {
@@ -107,11 +107,12 @@ public class Game {
         appPane.getChildren().addAll(background, gameRoot);
     }
 
+
+    // !TODO Fix platforms movements. Double shifts
     private void addPlatforms() {
         for (Player p : players) {
             p.translateYProperty().addListener((obs, old, newValue) -> {
-                if (p.getTranslateY() <= STAGE_HEIGHT / 2) {
-//                    System.out.println("p.getTranslateY() < STAGE_HEIGHT / 2");
+                if (p.getTranslateY() <= STAGE_HEIGHT / 2 && !p.isFalling) {
                     for (Platform platform : platforms) {
                         platform.setTranslateY(platform.getTranslateY() + 1);
                         if (platform.getTranslateY() == STAGE_HEIGHT + 1) {  // Выход платформы за пределы видимой карты

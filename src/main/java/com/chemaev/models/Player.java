@@ -16,6 +16,7 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     public Point2D playerVelocity = new Point2D(0, 10);
 
     private boolean canJump;
+    public boolean isFalling;
     private static final Image playerImg = new Image("images/doodler.png");
     private static final ImageView playerView = new ImageView(playerImg);
     private KeyCode lastKeyCode;
@@ -44,6 +45,7 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
                         if (getTranslateY() + HEIGHT == platform.getTranslateY()) {
                             setTranslateY(getTranslateY() - 1);
                             canJump = true;
+                            isFalling = false;
                             return;
                         }
                     }
@@ -59,9 +61,14 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
             canJump = false;
         }
         if (playerVelocity.getY() < 10) {
+            isFalling = false;
+            System.out.println("IN JUMP"); // когда прыгает
             playerVelocity = playerVelocity.add(0, 1);
-        } else canJump = false;
-//        System.out.println(getTranslateY());
+        } else {
+            canJump = false;
+            isFalling = true;
+            System.out.println("FALLING");
+        }
         moveY((int) playerVelocity.getY());
     }
 
