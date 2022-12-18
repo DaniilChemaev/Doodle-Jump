@@ -14,25 +14,49 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     private final double WIDTH = 76;
     private final double HEIGHT = 76;
     public Point2D playerVelocity = new Point2D(0, 10);
-
     private boolean canJump;
     public boolean isFalling;
     private static final Image playerImg = new Image("images/doodler.png");
     private static final ImageView playerView = new ImageView(playerImg);
     private KeyCode lastKeyCode;
+    private String name;
+    private boolean isMultiplayer;
+    private final Game game = Game.getInstance();
 
-    public Player() {
+
+    public Player(String name, boolean isMultiplayer) {
         playerView.setFitHeight(HEIGHT);
         playerView.setFitWidth(WIDTH);
+        setTranslateX(190);
+        setTranslateY(540);
         this.canJump = true;
+        this.name = name;
+        this.isMultiplayer = isMultiplayer;
+
+        getChildren().addAll(playerView);
+    }
+
+    public Player(String name, double x, double y) {
+        playerView.setFitHeight(HEIGHT);
+        playerView.setFitWidth(WIDTH);
+        setTranslateX(x);
+        setTranslateY(y);
+        this.canJump = true;
+        this.name = name;
 
         getChildren().addAll(playerView);
     }
 
     public void moveX(int value) {
         boolean movingRight = value > 0;
+        System.out.println("Im player " + name + ", multiplayer for me: " + isMultiplayer);
         for (int i = 0; i < Math.abs(value); i++) {
             this.setTranslateX(this.getTranslateX() + (movingRight ? 1 : -1));
+            setScaleX(movingRight ? 1 : -1);
+            if (isMultiplayer) {
+                String message = String.format("move %s %s %s\n", name, getTranslateX(), getTranslateY());
+                game.getGameClient().sendMessage(message);
+            }
         }
     }
 
@@ -62,18 +86,17 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
         }
         if (playerVelocity.getY() < 10) {
             isFalling = false;
-            System.out.println("IN JUMP"); // когда прыгает
             playerVelocity = playerVelocity.add(0, 1);
         } else {
             canJump = false;
             isFalling = true;
-            System.out.println("FALLING");
         }
         moveY((int) playerVelocity.getY());
     }
 
-    public void move() {
-
+    public void move(double x, double y) {
+        setTranslateX(x);
+        setTranslateY(y);
     }
 
     private void checkLRBounds() {
@@ -89,7 +112,7 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     }
 
     public void update() {
-        jump();
+//        jump();
         playerControl();
         checkLRBounds();
     }
@@ -126,5 +149,9 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
         }
 
         return didFall;
+    }
+
+    public String getName() {
+        return name;
     }
 }

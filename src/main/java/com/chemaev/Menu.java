@@ -42,7 +42,7 @@ public class Menu {
         singlePlayer.setFont(font);
 
         multiPlayer = new Button("multiPlayer");
-//        multiPlayer.setOnAction(multiPlayerEvent);
+        multiPlayer.setOnAction(multiPlayerEvent);
         multiPlayer.setMaxWidth(500);
         multiPlayer.setMaxHeight(500);
         multiPlayer.setFont(font);
@@ -76,6 +76,21 @@ public class Menu {
                 try {
                     game.setStage(stage);
                     game.startSinglePlayer();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    private final EventHandler<ActionEvent> multiPlayerEvent = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+            if (multiPlayer == event.getSource()) {
+                game.setName(nameTextField.getText());
+                try {
+                    game.setStage(stage);
+                    game.startMultiPlayer();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
