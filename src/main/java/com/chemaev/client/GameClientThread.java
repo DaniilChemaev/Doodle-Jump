@@ -47,10 +47,10 @@ public class GameClientThread implements Runnable {
 
                     if (inputMessageArray[0].equals("move")) {
                         String name = inputMessageArray[1];
-//                        int value = Integer.parseInt(inputMessageArray[2]);
                         double x = Double.parseDouble(inputMessageArray[2]);
                         double y = Double.parseDouble(inputMessageArray[3]);
-                        game.moveOps(name, x, y);
+                        int height = Integer.parseInt(inputMessageArray[4]);
+                        game.moveOps(name, x, y, height);
                     }
 
                     if (inputMessageArray[0].equals("shoot")) {

@@ -20,6 +20,8 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     private static final ImageView playerView = new ImageView(playerImg);
     private KeyCode lastKeyCode;
     private String name;
+    private int height = 0;
+    public boolean checkPlayerPos;
     private boolean isMultiplayer;
     private final Game game = Game.getInstance();
 
@@ -49,12 +51,11 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
 
     public void moveX(int value) {
         boolean movingRight = value > 0;
-        System.out.println("Im player " + name + ", multiplayer for me: " + isMultiplayer);
         for (int i = 0; i < Math.abs(value); i++) {
             this.setTranslateX(this.getTranslateX() + (movingRight ? 1 : -1));
             setScaleX(movingRight ? 1 : -1);
             if (isMultiplayer) {
-                String message = String.format("move %s %s %s\n", name, getTranslateX(), getTranslateY());
+                String message = String.format("move %s %s %s %s\n", name, getTranslateX(), getTranslateY(), height);
                 game.getGameClient().sendMessage(message);
             }
         }
@@ -76,6 +77,10 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
                 }
             }
             this.setTranslateY(this.getTranslateY() + (movingDown ? 1 : -1));
+            if (isMultiplayer) {
+                String message = String.format("move %s %s %s %s\n", name, getTranslateX(), getTranslateY(), height);
+                game.getGameClient().sendMessage(message);
+            }
         }
     }
 
@@ -112,9 +117,17 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
     }
 
     public void update() {
-//        jump();
+        jump();
+        addHeight();
         playerControl();
         checkLRBounds();
+    }
+
+    public void addHeight() {
+        if (checkPlayerPos) {
+            height += 5;
+        }
+        System.out.println(height);
     }
 
     private boolean isPressed(KeyCode key) {
@@ -153,5 +166,9 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
 
     public String getName() {
         return name;
+    }
+
+    public int getCurrentHeight() {
+        return height;
     }
 }

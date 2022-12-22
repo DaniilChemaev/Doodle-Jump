@@ -110,7 +110,6 @@ public class Game {
                 if (now - lastFrameTime >= 20_000_000) {
                     for (Player p : players) {
                         p.update();
-                        System.out.println(p.getName());
                         if (p.didFall()) {
                             System.out.println("GAME OVER");
                             showWinMenu(name);
@@ -146,15 +145,19 @@ public class Game {
         }
     }
 
-    public synchronized void moveOps(String playersName, double x, double y) {
+    public synchronized void moveOps(String playersName, double x, double y, int height) {
         boolean isFound = false;
 
         for (Ops ops : otherPlayersShadows) {
             if (ops.getName().equals(playersName)) {
-                javafx.application.Platform.runLater(() -> {
-                    ops.move(x, y);
-                });
-                isFound = true;
+                for (Player p : players) {
+                    if (!p.getName().equals(playersName)) {
+                        javafx.application.Platform.runLater(() -> {
+                            ops.move(x, y, height, p.getCurrentHeight());
+                        });
+                        isFound = true;
+                    }
+                }
             }
         }
 
@@ -200,7 +203,9 @@ public class Game {
     private void addPlatforms() {
         for (Player p : players) {
             p.translateYProperty().addListener((obs, old, newValue) -> {
+                p.checkPlayerPos = false;
                 if (p.getTranslateY() <= STAGE_HEIGHT / 2 && !p.isFalling) {
+                    p.checkPlayerPos = true;
                     for (Platform platform : platforms) {
                         platform.setTranslateY(platform.getTranslateY() + 1);
                         if (platform.getTranslateY() == STAGE_HEIGHT + 1) {  // Выход платформы за пределы видимой карты

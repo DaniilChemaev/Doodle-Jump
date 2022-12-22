@@ -68,9 +68,9 @@ public class Ops extends Pane {
 //        moveY((int) playerVelocity.getY());
 //    }
 
-    public void move(double x, double y) {
+    public void move(double x, double y, int height, int otherPlayerHeight) {
         setTranslateX(x);
-        setTranslateY(y);
+        setTranslateY(otherPlayerHeight - height + y);
     }
 
     private void checkLRBounds() {
