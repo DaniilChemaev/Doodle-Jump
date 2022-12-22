@@ -127,7 +127,6 @@ public class Player extends Pane implements EventHandler<KeyEvent> {
         if (checkPlayerPos) {
             height += 5;
         }
-        System.out.println(height);
     }
 
     private boolean isPressed(KeyCode key) {

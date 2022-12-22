@@ -9,10 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,6 +33,8 @@ public class Game {
     private static Scene scene;
     private Pane gamePane = new Pane();
     private static String name;
+    Text scoreText = new Text();
+    Text topScoreText = new Text();
     AnimationTimer timer;
 
 
@@ -72,6 +72,7 @@ public class Game {
                         }
                     }
                     lastFrameTime = now;
+                    playerScore(players.get(0));
                 }
             }
         };
@@ -117,6 +118,7 @@ public class Game {
                         }
                     }
                     lastFrameTime = now;
+                    playerScore(players.get(0));
                 }
             }
         };
@@ -215,6 +217,36 @@ public class Game {
                     }
                 }
             });
+        }
+    }
+
+    private void playerScore(Player currentPlayer) {
+        gamePane.getChildren().remove(scoreText);
+//
+        scoreText.setText("Score: " + currentPlayer.getCurrentHeight());
+        scoreText.setTranslateX(30);
+        scoreText.setTranslateY(20);
+        scoreText.setScaleX(2);
+        scoreText.setScaleY(2);
+        gamePane.getChildren().add(scoreText);
+//        System.out.println(players.toString());
+//
+        if (otherPlayersShadows.size() >= 1) {
+            gamePane.getChildren().remove(topScoreText);
+            int maxScore = currentPlayer.getCurrentHeight();
+            String maxScorePlayerName = currentPlayer.getName();
+            for (Ops p : otherPlayersShadows) {
+                if (maxScore < p.getCurrentHeight()) {
+                    maxScore = p.getCurrentHeight();
+                    maxScorePlayerName = p.getName();
+                }
+            }
+            topScoreText.setText(String.format("Top score: \"%s\" %s", maxScorePlayerName, maxScore));
+            topScoreText.setTranslateX(50);
+            topScoreText.setTranslateY(50);
+            topScoreText.setScaleX(2);
+            topScoreText.setScaleY(2);
+            gamePane.getChildren().add(topScoreText);
         }
     }
 

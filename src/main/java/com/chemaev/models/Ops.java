@@ -15,6 +15,7 @@ public class Ops extends Pane {
     private static final Image playerImg = new Image("images/doodler.png");
     private static final ImageView playerView = new ImageView(playerImg);
     private String name;
+    private int currentHeight = 0;
 
     public Ops(String name, double x, double y) {
         playerView.setFitHeight(HEIGHT);
@@ -71,6 +72,7 @@ public class Ops extends Pane {
     public void move(double x, double y, int height, int otherPlayerHeight) {
         setTranslateX(x);
         setTranslateY(otherPlayerHeight - height + y);
+        currentHeight = height;
     }
 
     private void checkLRBounds() {
@@ -103,5 +105,13 @@ public class Ops extends Pane {
 
     public String getName() {
         return name;
+    }
+
+    public int getCurrentHeight() {
+        return currentHeight;
+    }
+
+    public void setCurrentHeight(int currentHeight) {
+        this.currentHeight = currentHeight;
     }
 }

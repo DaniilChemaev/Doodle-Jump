@@ -38,9 +38,6 @@ public class GameServerThread implements Runnable {
         try {
             while (isWorking) {
                 String message = input.readLine();
-                if (message != null) {
-                    System.out.println(message);
-                }
                 server.sendMessage(message, this);
             }
         } catch (SocketException socketException) {
